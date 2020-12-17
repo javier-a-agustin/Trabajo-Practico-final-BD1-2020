@@ -12,7 +12,7 @@ CREATE TABLE materia_prima(
 );
 
 CREATE TABLE fabrica(
-	cuit VARCHAR NOT NULL PRIMARY KEY,
+	cuit VARCHAR(13) NOT NULL PRIMARY KEY,
 	calle VARCHAR(150) NOT NULL,
 	numero INT NOT NULL,
 	piso INT,
@@ -21,8 +21,8 @@ CREATE TABLE fabrica(
 
 CREATE TABLE equipo_directivo(
 	id SERIAL PRIMARY KEY,
-	fecha_i TIME DEFAULT Now(),
-	fecha_f TIME
+	fecha_i TIMESTAMP,
+	fecha_f TIMESTAMP
 );
 
 CREATE TABLE localidad(
@@ -64,9 +64,9 @@ CREATE TABLE persona(
 	departamento VARCHAR(10),
 	tipo_persona tipo NOT NULL,
 	id_localidad INT,	-- Localidad
-	cuit_f VARCHAR,		-- Fabrica
-	fecha_i DATE,
-	decha_f DATE,
+	cuit_f VARCHAR(13),		-- Fabrica
+	fecha_i TIMESTAMP,
+	fecha_f TIMESTAMP,
 
 	CONSTRAINT fk_localidad
 		FOREIGN KEY(id_localidad)
@@ -78,8 +78,8 @@ CREATE TABLE persona(
 
 CREATE TABLE contratacion(
 	dni INT NOT NULL,
-	fecha_i DATE DEFAULT Now(),
-	fecha_f DATE,
+	fecha_i TIMESTAMP,
+	fecha_f TIMESTAMP,
 	motivo_baja VARCHAR(230),
 	PRIMARY KEY(dni, fecha_i, fecha_f),
 
@@ -98,7 +98,7 @@ CREATE TABLE producto(
 	nombre VARCHAR(120),
 	precio FLOAT,
 	presentacion VARCHAR(120),
-	cuit_fabrica VARCHAR,
+	cuit_fabrica VARCHAR(13),
 	
 	CONSTRAINT  fk_cuit
 		FOREIGN KEY(cuit_fabrica)
@@ -107,9 +107,10 @@ CREATE TABLE producto(
 -- select * from producto
 
 CREATE TABLE equivale_a(
-	id_prod_1 INT NOT NULL,
-	id_prod_2 INT NOT NULL,
-	
+	id_prod_1 INT,
+	id_prod_2 INT,
+	PRIMARY KEY(id_prod_1, id_prod_2),
+		
 	CONSTRAINT fk_id_prod_1
 		FOREIGN KEY(id_prod_1)
 			REFERENCES producto(id),
@@ -121,6 +122,7 @@ CREATE TABLE equivale_a(
 -- select * from equivale_a;
 
 CREATE TABLE fabricado_con(
+	id SERIAL PRIMARY KEY, -- Que sea un id unico para cada relacion. Si no se puede repetir
 	id_prod INT NOT NULL,
 	id_mat_prima INT NOT NULL,
 	cantidad INT,
@@ -135,7 +137,7 @@ CREATE TABLE fabricado_con(
 );
 
 CREATE TABLE proveedor(
-	cuit VARCHAR(150) PRIMARY KEY,
+	cuit VARCHAR(13) PRIMARY KEY,
 	descripcion TEXT,
 	telefono INT,
 	calle VARCHAR(40),
@@ -151,11 +153,11 @@ CREATE TABLE proveedor(
 
 CREATE TABLE pedido_proveedor(
 	nro_pedido SERIAL PRIMARY KEY,
-	fecha_e DATE,
-	fecha_r DATE,
-	hora_r TIME,
-	cuit_f VARCHAR, --fabrica
-	cuit_p VARCHAR, --proveedor
+	fecha_e TIMESTAMP,
+	fecha_r TIMESTAMP,
+	hora_r TIMESTAMP,
+	cuit_f VARCHAR(13), --fabrica
+	cuit_p VARCHAR(13), --proveedor
 	
 	CONSTRAINT fk_cuit_fabrica
 		FOREIGN KEY(cuit_f)
@@ -168,12 +170,13 @@ CREATE TABLE pedido_proveedor(
 
 
 CREATE TABLE detalle_pedido_proveedor(
-	renglon INT PRIMARY KEY,
+	renglon INT,
 	nro_pedido INT,
 	cantidad INT NOT NULL,
 	precio FLOAT NOT NULL,
 	id_mat_prima INT, --materia prima
 	
+	PRIMARY KEY(renglon, nro_pedido),
 	CONSTRAINT fk_materia_prima
 		FOREIGN KEY(id_mat_prima)
 			REFERENCES materia_prima(id),
@@ -184,11 +187,12 @@ CREATE TABLE detalle_pedido_proveedor(
 );
 
 CREATE TABLE efectua(
-	cuit_f VARCHAR,
-	cuit_p VARCHAR,
-	nro_pedido INT,
-	fecha DATE PRIMARY KEY,
+	cuit_f VARCHAR(13),
+	cuit_p VARCHAR(13),
+	nro_pedido INT, -- Añadido nro pedido como primary key tambien
+	fecha TIMESTAMP,
 	
+	PRIMARY KEY(nro_pedido, fecha),
 	CONSTRAINT fk_cuit_fabrica
 		FOREIGN KEY(cuit_f)
 			REFERENCES fabrica(cuit),
@@ -202,9 +206,9 @@ CREATE TABLE efectua(
 
 
 CREATE TABLE produce(
-	cuit VARCHAR NOT NULL,
-	id_producto INT NOT NULL,
-
+	cuit VARCHAR(13),
+	id_producto INT,
+	PRIMARY KEY(cuit, id_producto),
 	CONSTRAINT fk_cuit
 		FOREIGN KEY(cuit)
 			REFERENCES fabrica(cuit),
@@ -214,10 +218,12 @@ CREATE TABLE produce(
 );
 
 
-CREATE TABLE tiene(
-	id_equipo INT NOT NULL,
-	cuit VARCHAR NOT NULL,
 
+CREATE TABLE tiene(
+	id_equipo INT,
+	cuit VARCHAR(13),
+	
+	PRIMARY KEY(id_equipo, cuit),
 	CONSTRAINT fk_equipo
 		FOREIGN KEY(id_equipo)
 			REFERENCES equipo_directivo(id),
@@ -230,9 +236,10 @@ CREATE TABLE tiene(
 
 
 CREATE TABLE compuesto_por(
-	id_equipo INT NOT NULL, --Equipo
-	dni INT NOT NULL, -- Persona
+	id_equipo INT, --Equipo
+	dni INT, -- Persona
 	
+	PRIMARY KEY(id_equipo, dni),
 	CONSTRAINT fk_equipo
 		FOREIGN KEY(id_equipo)
 			REFERENCES equipo_directivo(id),
@@ -243,10 +250,10 @@ CREATE TABLE compuesto_por(
 
 CREATE TABLE pedido_cliente(
 	nro_pedido SERIAL PRIMARY KEY,
-	fecha_e DATE,
+	fecha_e TIMESTAMP,
 	dni INT NOT NULL,
-	fecha_r DATE,
-	hora_r TIME,
+	fecha_r TIMESTAMP,
+	hora_r TIMESTAMP,
 	
 	CONSTRAINT fk_persona
 		FOREIGN KEY(dni)
@@ -255,12 +262,13 @@ CREATE TABLE pedido_cliente(
 	
 
 CREATE TABLE detalle_pedido_cliente(
-	renglon INT PRIMARY KEY,
-	nro_pedido INT NOT NULL, --peidod cliente
+	renglon INT,
+	nro_pedido INT, --peidod cliente
 	cantidad INT,
 	precio FLOAT,
 	id_producto INT, --producto
 
+	PRIMARY KEY(nro_pedido, renglon),
 	CONSTRAINT fk_pedido_cliente
 		FOREIGN KEY(nro_pedido)
 			REFERENCES pedido_cliente(nro_pedido),
@@ -286,8 +294,9 @@ CREATE TABLE almacen(
 CREATE TABLE almacenado_en(
 	id_producto INT, --producto
 	id_almacen INT, --almacen
-	cantidad INT NOT NULL,
+	cantidad INT,
 
+	PRIMARY KEY(id_producto, id_almacen, cantidad),	
 	CONSTRAINT fk_producto
 		FOREIGN KEY(id_producto)
 			REFERENCES producto(id),
@@ -297,9 +306,10 @@ CREATE TABLE almacenado_en(
 );
 
 CREATE TABLE posee(
-	id_especialidad INT NOT NULL, --especialdidad
-	dni INT NOT NULL, --persona
+	id_especialidad INT, --especialdidad
+	dni INT, --persona
 	
+	PRIMARY KEY(dni, id_especialidad),
 	CONSTRAINT fk_especialidad
 		FOREIGN KEY(id_especialidad)
 			REFERENCES especialidad(id),
@@ -307,6 +317,8 @@ CREATE TABLE posee(
 		FOREIGN KEY(dni)
 			REFERENCES persona(dni)
 );
+
+
 
 
 	
