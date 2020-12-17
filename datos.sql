@@ -17,3 +17,20 @@ INSERT INTO fabrica(cuit, calle, numero) VALUES
 	('11-22211-9', 'Belgrano', 30),
 	('22-22-22', 'Perito Moreno',1590);
 
+INSERT INTO producto(nombre, precio, presentacion, cuit_fabrica) VALUES
+('Pileta de Lona 3,50 MT x 2,5 MT', 7000, 'En caja', '11-22211-9'),
+('Maceta 10 LTS', 1000, 'Suelto', '22-22-22');
+
+select * from producto;
+
+INSERT INTO proveedor (cuit, descripcion, telefono, calle, numero, id_localidad) VALUES
+('30-83278492-9', 'Ramiro Inc', 154660860, 'Ceferino Namuncura', 1708, 1);
+
+select * from proveedor;
+
+INSERT INTO materia_prima (nombre) VALUES
+('Carton corrugado x 20 KG');
+
+-- Para consulta opcional
+INSERT INTO almacen (calle, numero, id_localidad) VALUES
+('25 de mayo', 5231, 1);
