@@ -55,6 +55,10 @@ INSERT INTO almacen (calle, numero, id_localidad) VALUES
 -- SELECT EXTRACT(YEAR from (select fecha_e from pedido_cliente));
 
 INSERT INTO pedido_cliente(fecha_e, dni, fecha_r) VALUES 
+('2019-05-03 10:10:00-07', 222222, '2019-09-15 09:0:30-10');
+
+
+
 ('2019-07-14 19:11:25-07', 99999, '2019-08-01 08:0:30-00'),
 ('2010-07-14 11:04:00-00', 010101, '2011-12-01 10:0:30-00'),
 ('2019-08-20 09:00:00-07', 99999, '2019-09-01 09:0:30-10'),
@@ -79,6 +83,8 @@ select * from pedido_cliente;
 
 
 INSERT INTO detalle_pedido_cliente(renglon, nro_pedido, cantidad, id_producto) VALUES 
+
+(7, 6, 2, 1)
 -- Cambiar renglon a SERIAL
 (1, 2, 1, 1),
 (2, 2, 3, 4),
