@@ -120,7 +120,25 @@ INSERT INTO detalle_pedido_proveedor(renglon, nro_pedido, cantidad, precio, id_m
 	
 select * from detalle_pedido_proveedor;
 
+-- Datos para la tercer consulta
+INSERT INTO pedido_proveedor(fecha_e, cuit_f, cuit_p) VALUES
+--('2019-07-14 19:11:25-07', '30-18273849-9', '30-83278492-9'),
+--('2019-07-15 19:14:25-07', '30-18273849-9', '30-83278492-9'),
+--('2019-07-18 19:11:25-07', '30-66736278-9', '30-83278492-9'),
+--('2019-07-20 19:11:25-07', '30-66736278-9', '30-83278492-9'),
+('2019-07-20 19:11:25-07', '30-66736278-9', '20-123456-8');
+('2019-08-2 20:11:25-07', '30-18273849-9', '30-83278492-9');
 
+select * from pedido_proveedor;
+
+INSERT INTO detalle_pedido_proveedor(renglon, nro_pedido, cantidad, precio, id_mat_prima) VALUES
+--(1, 1, 4, 300, 1),
+--(2, 2, 10, 450, 1); -- Detecta error cuando dos renglones tienen el mismo numero, aunque sean de pedidos distintos
+(4, 6, 1, 40, 1);
+(1, 4, 14, 650, 1),
+(1, 5, 10, 440, 1);
+
+select * from detalle_pedido_proveedor;
 
 
 
