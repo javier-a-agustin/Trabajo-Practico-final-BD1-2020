@@ -25,13 +25,14 @@ SELECT pc.nro_pedido, pc.fecha_e, pc.dni, pc.fecha_r, pc.hora_r from pedido_clie
 
 -- 2
 -- Listar los primeros 5 Productos mas vendidos durante el invierno de 2019
-producto detalle pedido
--- invierno: 21 marzo 21-03-2019 - 20 junio 20-06-2020
 
-SELECT producto.nombre from producto inner join detalle_pedido_cliente as dpc on producto.id = dpc.id_producto
+SELECT  producto.nombre, SUM (dpc.cantidad) as cantidad from producto 
+	inner join detalle_pedido_cliente as dpc on producto.id = dpc.id_producto
 	inner join pedido_cliente as pedido on pedido.nro_pedido = dpc.nro_pedido 
-	where pedido.fecha_e < '2019-06-20' and
-	pedido.fecha_e >= '2019-03-21';
+	where pedido.fecha_e >= '2019-06-20' 
+	and pedido.fecha_e <= '2019-09-21' 
+	group by( producto.nombre )
+	ORDER BY( cantidad ) DESC LIMIT 5; 
 	
 	
 
