@@ -39,13 +39,19 @@ SELECT producto.nombre from producto inner join detalle_pedido_cliente as dpc on
 -- 3
 -- Obtener la cantidad de compras realizadas al proveedor "Ramiro Inc" donde se incluyo materia prima "Carton corrugado x 20 KG"
 
+select * from pedido_proveedor;
+select * from detalle_pedido_proveedor;
 
-
-
-
-
-
-
+SELECT COUNT(*) FROM pedido_proveedor as pp
+	-- Uno el pedido con el detalle, utilizando el nro de pedido del detalle
+	inner join detalle_pedido_proveedor as dpp on pp.nro_pedido = dpp.nro_pedido
+	-- Uno el pedido con el proveedor, utilizando el cuit del prov. del pedido
+	inner join proveedor on pp.cuit_p = proveedor.cuit
+	-- Uno la materia prima con el pedido, utilizando el id del detalle
+	inner join materia_prima as mp on dpp.id_mat_prima = mp.id
+	where mp.nombre = 'Carton corrugado x 20 KG' and
+	proveedor.descripcion = 'Ramiro Inc'
+	
 -- Opcional
 -- Listar los 3 clientes que realizaron las mayores compras en "Trelew" y retiraron en el Almacen ubicado en
 --  "25 de Mayo 5231". Durante el mes de Enero/2020
